@@ -1,11 +1,16 @@
 import Hero from '../components/Hero'
 import CourseCard from '../components/CourseCard'
 import Button from '../components/Button'
+import dataScience from "../assets/dataScience.jpeg"
+import ui from "../assets/UI.jpg"
+import fullStack from "../assets/fullStack.jpg"
+import digitalMarketing from "../assets/digitalMarketing.jpg"
 
 const Home = () => {
   const courses = [
     {
       id: 1,
+      image:fullStack,
       title: "Full Stack Web Development",
       description: "Learn to build modern web applications from frontend to backend.",
       duration: "12 weeks",
@@ -13,6 +18,7 @@ const Home = () => {
     },
     {
       id: 2,
+      image:dataScience,
       title: "Data Science Fundamentals",
       description: "Master data analysis, visualization, and machine learning basics.",
       duration: "10 weeks",
@@ -21,14 +27,16 @@ const Home = () => {
     {
       id: 3,
       title: "UI/UX Design Masterclass",
-      description: "Create stunning user interfaces and enhance user experiences.",
+      image:ui,
+      description: "Create stunning user interfaces and enhance user experiences. Create your Own design.",
       duration: "8 weeks",
       level: "Advanced"
     },
     {
       id: 4,
       title: "Digital Marketing Strategy",
-      description: "Learn to create effective digital marketing campaigns.",
+      image:digitalMarketing,
+      description: "Learn to create effective digital marketing campaigns. Market like Professionals.",
       duration: "6 weeks",
       level: "Beginner"
     }
