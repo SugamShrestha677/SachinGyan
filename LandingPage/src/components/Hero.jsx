@@ -9,8 +9,8 @@ const Hero = () => {
             <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Learn Without Limits</h1>
             <p className="text-lg text-gray-600 mb-8">Start, switch, or advance your career with our courses, certificates, and degrees from world-class universities and companies.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <Button>Join For Free</Button>
-              <Button variant="outline">Explore Courses</Button>
+              <Button className='p-2.5'>Join For Free</Button>
+              <Button variant="outline" className='p-2.5'>Explore Courses</Button>
             </div>
           </div>
           <div className="md:w-1/2 mt-10 md:mt-0">
