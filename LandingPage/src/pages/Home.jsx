@@ -61,7 +61,7 @@ const Home = () => {
           </div>
           
           <div className="text-center mt-12">
-            <Button>View All Courses</Button>
+            <Button className='p-2.5'>View All Courses</Button>
           </div>
         </div>
       </section>
@@ -108,8 +108,8 @@ const Home = () => {
           <h2 className="text-3xl font-bold text-white mb-4">Ready to Start Your Learning Journey?</h2>
           <p className="text-lg text-indigo-100 mb-8 max-w-3xl mx-auto">Join thousands of students who have transformed their careers with our courses.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="outline" className="bg-white text-indigo-600 hover:bg-indigo-50">Sign Up Now</Button>
-            <Button variant="outline" className="border-white text-white hover:bg-indigo-700">Contact Us</Button>
+            <Button variant="outline" className="bg-white p-2.5 text-indigo-600 hover:bg-indigo-50">Sign Up Now</Button>
+            <Button className="border-white text-white p-2.5 bg-indigo-800">Contact Us</Button>
           </div>
         </div>
       </section>
