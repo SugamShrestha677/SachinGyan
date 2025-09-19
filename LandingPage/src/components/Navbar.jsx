@@ -60,7 +60,7 @@ const Navbar = () => {
                 onClick={toggleMenu}
                 className="text-gray-700 hover:text-indigo-600 focus:outline-none"
               >
-                {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+                {isMenuOpen ? <X size={28} className="cursor-pointer" /> : <Menu size={28} className="cursor-pointer"/>}
               </button>
             </div>
           </div>
@@ -91,10 +91,10 @@ const Navbar = () => {
             </Link>
 
             <div className="pt-4 pb-3 border-t border-gray-200">
-              <Button variant="outline" className="w-full mb-2">
+              <Button variant="outline" className="w-full p-2.5 mb-2">
                 Login
               </Button>
-              <Button className="w-full">Sign Up</Button>
+              <Button className="w-full p-2.5">Sign Up</Button>
             </div>
           </div>
         </div>
