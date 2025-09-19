@@ -1,8 +1,24 @@
-// pages/Dashboard.jsx
-import DashboardLayout from '../components/DashboardLayout'
-import ProgressBar from '../components/ProgressBar'
+import { Routes, Route } from 'react-router-dom'
+import DashboardLayout from '../components/dashboard/DashboardLayout'
+import Videos from './Videos'
+import Notes from './Notes'
+import LiveClasses from './LiveClasses'
+import Profile from './Profile'
 
 const Dashboard = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<DashboardLayout><DashboardHome /></DashboardLayout>} />
+      <Route path="videos" element={<Videos />} />
+      <Route path="notes" element={<Notes />} />
+      <Route path="live-classes" element={<LiveClasses />} />
+      <Route path="profile" element={<Profile />} />
+    </Routes>
+  )
+}
+
+// DashboardHome component for the main dashboard page
+const DashboardHome = () => {
   const enrolledCourses = [
     { id: 1, title: 'Full Stack Web Development', progress: 65 },
     { id: 2, title: 'Data Science Fundamentals', progress: 30 },
@@ -15,7 +31,9 @@ const Dashboard = () => {
   ]
 
   return (
-    <DashboardLayout>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex items-center">
@@ -65,7 +83,12 @@ const Dashboard = () => {
                   <span className="text-sm font-medium">{course.title}</span>
                   <span className="text-sm font-medium">{course.progress}%</span>
                 </div>
-                <ProgressBar progress={course.progress} />
+                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                  <div 
+                    className="bg-indigo-600 h-2.5 rounded-full" 
+                    style={{ width: `${course.progress}%` }}
+                  ></div>
+                </div>
               </div>
             ))}
           </div>
@@ -92,7 +115,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </div>
   )
 }
 
