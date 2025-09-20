@@ -1,7 +1,7 @@
 // pages/ForgotPassword.jsx
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useNotification } from '../contexts/NotificationContext'
+import { toast } from 'react-hot-toast'
 import Button from '../components/Button'
 
 const ForgotPassword = () => {
@@ -10,7 +10,6 @@ const ForgotPassword = () => {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   
-  const { addNotification } = useNotification()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -30,10 +29,10 @@ const ForgotPassword = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000))
       setMessage('Password reset instructions have been sent to your email')
-      addNotification('Password reset email sent!', 'success')
+      toast.success('Password reset email sent!')
     } catch (error) {
       setError('Failed to send reset instructions')
-      addNotification('Failed to send reset email', 'error')
+      toast.error('Failed to send reset email')
     } finally {
       setLoading(false)
     }

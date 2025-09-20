@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { useNotification } from './NotificationContext'
 
 const AuthContext = createContext()
 
@@ -14,7 +13,6 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
-  const { addNotification } = useNotification()
 
   useEffect(() => {
     // Check if user is logged in on app load
@@ -43,11 +41,8 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', response.data.token)
       localStorage.setItem('user', JSON.stringify(response.data.user))
       
-      addNotification('Logged in successfully!', { type: 'success' })
-      
       return { success: true }
     } catch (error) {
-      addNotification(error.message || 'Login failed', { type: 'error' })
       return { success: false, message: error.message }
     }
   }
@@ -68,11 +63,8 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', response.data.token)
       localStorage.setItem('user', JSON.stringify(response.data.user))
       
-      addNotification('Account created successfully!', { type: 'success' })
-      
       return { success: true }
     } catch (error) {
-      addNotification(error.message || 'Signup failed', { type: 'error' })
       return { success: false, message: error.message }
     }
   }
@@ -81,7 +73,6 @@ export const AuthProvider = ({ children }) => {
     setUser(null)
     localStorage.removeItem('token')
     localStorage.removeItem('user')
-    addNotification('Logged out successfully', { type: 'info' })
   }
 
   const value = {

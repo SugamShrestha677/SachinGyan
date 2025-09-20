@@ -1,8 +1,8 @@
 // pages/Signup.jsx
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { useNotification } from '../contexts/NotificationContext'
+import { toast } from 'react-hot-toast'
 import Button from '../components/Button'
 
 const Signup = () => {
@@ -15,8 +15,27 @@ const Signup = () => {
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   
-  const { signup } = useAuth()
-  const { addNotification } = useNotification()
+  const { signup, user, loading: authLoading } = useAuth()
+  const navigate = useNavigate()
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard')
+    }
+  }, [user, navigate])
+
+  // Show loading if auth is still loading
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -71,9 +90,10 @@ const Signup = () => {
     setLoading(false)
     
     if (result.success) {
-      addNotification('Account created successfully!', 'success')
+      toast.success('Account created successfully!')
+      navigate('/dashboard')
     } else {
-      addNotification(result.message || 'Signup failed', 'error')
+      toast.error(result.message || 'Signup failed')
     }
   }
 
