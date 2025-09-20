@@ -1,8 +1,7 @@
-// pages/Signup.jsx
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { toast } from 'react-hot-toast'
+// import { useNotification } from '../contexts/NotificationContext'
 import Button from '../components/Button'
 
 const Signup = () => {
@@ -14,8 +13,10 @@ const Signup = () => {
   })
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
+  const [focusedField, setFocusedField] = useState(null)
   
   const { signup, user, loading: authLoading } = useAuth()
+  // const { addNotification } = useNotification()
   const navigate = useNavigate()
 
   // Redirect if already logged in
@@ -28,7 +29,7 @@ const Signup = () => {
   // Show loading if auth is still loading
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading...</p>
@@ -53,6 +54,14 @@ const Signup = () => {
     }
   }
 
+  const handleFocus = (fieldName) => {
+    setFocusedField(fieldName)
+  }
+
+  const handleBlur = () => {
+    setFocusedField(null)
+  }
+
   const validateForm = () => {
     const newErrors = {}
     
@@ -63,7 +72,7 @@ const Signup = () => {
     if (!formData.email) {
       newErrors.email = 'Email is required'
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid'
+      newErrors.email = 'Please enter a valid email address'
     }
     
     if (!formData.password) {
@@ -90,101 +99,172 @@ const Signup = () => {
     setLoading(false)
     
     if (result.success) {
-      toast.success('Account created successfully!')
+      addNotification('Account created successfully!', { type: 'success' })
       navigate('/dashboard')
     } else {
-      toast.error(result.message || 'Signup failed')
+      addNotification(result.message || 'Signup failed. Please try again.', { type: 'error' })
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
-              sign in to your existing account
-            </Link>
-          </p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full">
+        {/* Logo/Header */}
+        <div className="text-center mb-8">
+          <div className="mx-auto w-16 h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center mb-4">
+            <span className="text-indigo-600 text-2xl font-bold">ES</span>
+          </div>
+          <h1 className="text-3xl font-light text-gray-800">Create your account</h1>
+          <p className="mt-2 text-gray-500">Join us to start your learning journey</p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+        
+        {/* Form Card */}
+        <div className="bg-white rounded-2xl shadow-sm p-8">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="name" className="sr-only">Full Name</label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                autoComplete="name"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Full Name"
-                value={formData.name}
-                onChange={handleChange}
-              />
-              {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                Full Name
+              </label>
+              <div className={`relative rounded-md transition-all duration-200 ${focusedField === 'name' ? 'ring-2 ring-indigo-500 ring-opacity-50' : ''}`}>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  autoComplete="name"
+                  required
+                  className="block w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors duration-200"
+                  placeholder="Your full name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus('name')}
+                  onBlur={handleBlur}
+                />
+              </div>
+              {errors.name && <p className="mt-2 text-sm text-red-600">{errors.name}</p>}
             </div>
-            <div>
-              <label htmlFor="email" className="sr-only">Email address</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={formData.email}
-                onChange={handleChange}
-              />
-              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
-            </div>
-            <div>
-              <label htmlFor="confirmPassword" className="sr-only">Confirm Password</label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-              {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
-            </div>
-          </div>
 
-          <div>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={loading}
-            >
-              {loading ? 'Creating account...' : 'Create account'}
-            </Button>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email address
+              </label>
+              <div className={`relative rounded-md transition-all duration-200 ${focusedField === 'email' ? 'ring-2 ring-indigo-500 ring-opacity-50' : ''}`}>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  className="block w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors duration-200"
+                  placeholder="you@example.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus('email')}
+                  onBlur={handleBlur}
+                />
+              </div>
+              {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email}</p>}
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <div className={`relative rounded-md transition-all duration-200 ${focusedField === 'password' ? 'ring-2 ring-indigo-500 ring-opacity-50' : ''}`}>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  className="block w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors duration-200"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus('password')}
+                  onBlur={handleBlur}
+                />
+              </div>
+              {errors.password && <p className="mt-2 text-sm text-red-600">{errors.password}</p>}
+            </div>
+
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                Confirm Password
+              </label>
+              <div className={`relative rounded-md transition-all duration-200 ${focusedField === 'confirmPassword' ? 'ring-2 ring-indigo-500 ring-opacity-50' : ''}`}>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  className="block w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors duration-200"
+                  placeholder="••••••••"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus('confirmPassword')}
+                  onBlur={handleBlur}
+                />
+              </div>
+              {errors.confirmPassword && <p className="mt-2 text-sm text-red-600">{errors.confirmPassword}</p>}
+            </div>
+
+            <div className="flex items-center">
+              <input
+                id="terms"
+                name="terms"
+                type="checkbox"
+                required
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
+                I agree to the{' '}
+                <Link to="/terms" className="text-indigo-600 hover:text-indigo-500">
+                  Terms and Conditions
+                </Link>
+              </label>
+            </div>
+
+            <div>
+              <Button
+                type="submit"
+                className="w-full py-3 text-base font-medium"
+                disabled={loading}
+                loading={loading}
+              >
+                {loading ? 'Creating account...' : 'Create account'}
+              </Button>
+            </div>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Already have an account?{' '}
+              <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Sign in
+              </Link>
+            </p>
           </div>
-        </form>
+        </div>
+
+        {/* App Download Links (optional) */}
+        <div className="mt-8 text-center">
+          <p className="text-xs text-gray-500 mb-3">Get the app</p>
+          <div className="flex justify-center space-x-4">
+            <button className="p-2 bg-black rounded text-white text-xs">
+              <span className="flex items-center">
+                <i className="fab fa-apple mr-1"></i>
+                App Store
+              </span>
+            </button>
+            <button className="p-2 bg-black rounded text-white text-xs">
+              <span className="flex items-center">
+                <i className="fab fa-google-play mr-1"></i>
+                Play Store
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )
