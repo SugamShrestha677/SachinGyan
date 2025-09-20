@@ -1,13 +1,13 @@
 const LiveClasses = () => {
   const upcomingClasses = [
-    { id: 1, title: 'React Advanced Patterns', time: '10:00 AM', date: 'Tomorrow', instructor: 'John Doe' },
-    { id: 2, title: 'Node.js Backend Development', time: '2:00 PM', date: 'Sep 20', instructor: 'Jane Smith' },
-    { id: 3, title: 'UI/UX Design Principles', time: '4:00 PM', date: 'Sep 22', instructor: 'Alex Johnson' },
+    { id: 1, title: 'React Advanced Patterns', time: '10:00 AM', date: 'Tomorrow', instructor: 'Rikesh Joshi' },
+    { id: 2, title: 'Node.js Backend Development', time: '2:00 PM', date: 'Sep 20', instructor: 'Jenish Maharjan' },
+    { id: 3, title: 'UI/UX Design Principles', time: '4:00 PM', date: 'Sep 22', instructor: 'Alish Khatiwada' },
   ]
 
   const pastClasses = [
-    { id: 1, title: 'Introduction to React', time: '45:30', date: 'Sep 10', instructor: 'John Doe' },
-    { id: 2, title: 'JavaScript Fundamentals', time: '38:15', date: 'Sep 5', instructor: 'Jane Smith' },
+    { id: 1, title: 'Introduction to React', time: '45:30', date: 'Sep 10', instructor: 'Rikesh Joshi' },
+    { id: 2, title: 'JavaScript Fundamentals', time: '38:15', date: 'Sep 5', instructor: 'Alish Khatiwada' },
   ]
 
   return (
