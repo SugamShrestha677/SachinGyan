@@ -1,8 +1,7 @@
-// pages/Login.jsx
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { toast } from 'react-hot-toast'
+// import { useNotification } from '../contexts/NotificationContext'
 import Button from '../components/Button'
 
 const Login = () => {
@@ -12,8 +11,10 @@ const Login = () => {
   })
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
+  const [focusedField, setFocusedField] = useState(null)
   
   const { login, user, loading: authLoading } = useAuth()
+  // const { addNotification } = useNotification()
   const navigate = useNavigate()
 
   // Redirect if already logged in
@@ -51,13 +52,21 @@ const Login = () => {
     }
   }
 
+  const handleFocus = (fieldName) => {
+    setFocusedField(fieldName)
+  }
+
+  const handleBlur = () => {
+    setFocusedField(null)
+  }
+
   const validateForm = () => {
     const newErrors = {}
     
     if (!formData.email) {
       newErrors.email = 'Email is required'
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid'
+      newErrors.email = 'Please enter a valid email address'
     }
     
     if (!formData.password) {
@@ -80,62 +89,77 @@ const Login = () => {
     setLoading(false)
     
     if (result.success) {
-      toast.success('Logged in successfully!')
+      addNotification('Logged in successfully!', { type: 'success' })
       navigate('/dashboard')
     } else {
-      toast.error(result.message || 'Login failed')
+      addNotification(result.message || 'Login failed. Please check your credentials.', { type: 'error' })
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
-              create a new account
-            </Link>
-          </p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email" className="sr-only">Email address</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={formData.email}
-                onChange={handleChange}
-              />
-              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
-            </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full">
+        {/* Logo/Header */}
+        <div className="text-center mb-8">
+          <div className="mx-auto w-16 h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center mb-4">
+            <span className="text-indigo-600 text-2xl font-bold">ES</span>
           </div>
+          <h1 className="text-3xl font-light text-gray-800">Welcome back</h1>
+          <p className="mt-2 text-gray-500">Sign in to your account</p>
+        </div>
+        
+        {/* Form Card */}
+        <div className="bg-white rounded-2xl shadow-sm p-8">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email address
+              </label>
+              <div className={`relative rounded-md transition-all duration-200 ${focusedField === 'email' ? 'ring-2 ring-indigo-500 ring-opacity-50' : ''}`}>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  className="block w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors duration-200"
+                  placeholder="you@example.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus('email')}
+                  onBlur={handleBlur}
+                />
+              </div>
+              {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email}</p>}
+            </div>
 
-          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  Password
+                </label>
+                <Link to="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-500">
+                  Forgot password?
+                </Link>
+              </div>
+              <div className={`relative rounded-md transition-all duration-200 ${focusedField === 'password' ? 'ring-2 ring-indigo-500 ring-opacity-50' : ''}`}>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  className="block w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors duration-200"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus('password')}
+                  onBlur={handleBlur}
+                />
+              </div>
+              {errors.password && <p className="mt-2 text-sm text-red-600">{errors.password}</p>}
+            </div>
+
             <div className="flex items-center">
               <input
                 id="remember-me"
@@ -143,28 +167,51 @@ const Login = () => {
                 type="checkbox"
                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
                 Remember me
               </label>
             </div>
 
-            <div className="text-sm">
-              <Link to="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Forgot your password?
-              </Link>
+            <div>
+              <Button
+                type="submit"
+                className="w-full py-3 text-base font-medium"
+                disabled={loading}
+                loading={loading}
+              >
+                {loading ? 'Signing in...' : 'Sign in'}
+              </Button>
             </div>
-          </div>
+          </form>
 
-          <div>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={loading}
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </Button>
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Don't have an account?{' '}
+              <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Sign up
+              </Link>
+            </p>
           </div>
-        </form>
+        </div>
+
+        {/* App Download Links (optional) */}
+        <div className="mt-8 text-center">
+          <p className="text-xs text-gray-500 mb-3">Get the app</p>
+          <div className="flex justify-center space-x-4">
+            <button className="p-2 bg-black rounded text-white text-xs">
+              <span className="flex items-center">
+                <i className="fab fa-apple mr-1"></i>
+                App Store
+              </span>
+            </button>
+            <button className="p-2 bg-black rounded text-white text-xs">
+              <span className="flex items-center">
+                <i className="fab fa-google-play mr-1"></i>
+                Play Store
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )
