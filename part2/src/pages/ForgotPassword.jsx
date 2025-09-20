@@ -1,7 +1,6 @@
-// pages/ForgotPassword.jsx
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { toast } from 'react-hot-toast'
+// import { useNotification } from '../contexts/NotificationContext'
 import Button from '../components/Button'
 
 const ForgotPassword = () => {
@@ -9,7 +8,17 @@ const ForgotPassword = () => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const [focusedField, setFocusedField] = useState(null)
   
+  // const { addNotification } = useNotification()
+
+  const handleFocus = () => {
+    setFocusedField('email')
+  }
+
+  const handleBlur = () => {
+    setFocusedField(null)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -18,7 +27,7 @@ const ForgotPassword = () => {
       setError('Email is required')
       return
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setError('Email is invalid')
+      setError('Please enter a valid email address')
       return
     }
     
@@ -29,62 +38,96 @@ const ForgotPassword = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000))
       setMessage('Password reset instructions have been sent to your email')
-      toast.success('Password reset email sent!')
+      addNotification('Password reset email sent! Check your inbox.', { type: 'success' })
     } catch (error) {
       setError('Failed to send reset instructions')
-      toast.error('Failed to send reset email')
+      addNotification('Failed to send reset email. Please try again.', { type: 'error' })
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Reset your password
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
-              return to sign in
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full">
+        {/* Logo/Header */}
+        <div className="text-center mb-8">
+          <div className="mx-auto w-16 h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center mb-4">
+            <span className="text-indigo-600 text-2xl font-bold">ES</span>
+          </div>
+          <h1 className="text-3xl font-light text-gray-800">Reset your password</h1>
+          <p className="mt-2 text-gray-500">Enter your email to receive reset instructions</p>
+        </div>
+        
+        {/* Form Card */}
+        <div className="bg-white rounded-2xl shadow-sm p-8">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email address
+              </label>
+              <div className={`relative rounded-md transition-all duration-200 ${focusedField === 'email' ? 'ring-2 ring-indigo-500 ring-opacity-50' : ''}`}>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  className="block w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors duration-200"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                />
+              </div>
+              {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+            </div>
+
+            {message && (
+              <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-md">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <i className="fas fa-check-circle text-green-400"></i>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-green-700">{message}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div>
+              <Button
+                type="submit"
+                className="w-full py-3 text-base font-medium"
+                disabled={loading}
+                loading={loading}
+              >
+                {loading ? 'Sending...' : 'Send reset instructions'}
+              </Button>
+            </div>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Remember your password?{' '}
+              <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Return to sign in
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        {/* Additional Help */}
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-500">
+            Need more help?{' '}
+            <Link to="/contact" className="font-medium text-indigo-600 hover:text-indigo-500">
+              Contact support
             </Link>
           </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="email" className="sr-only">Email address</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
-          </div>
-
-          {message && (
-            <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4">
-              <p>{message}</p>
-            </div>
-          )}
-
-          <div>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={loading}
-            >
-              {loading ? 'Sending...' : 'Send reset instructions'}
-            </Button>
-          </div>
-        </form>
       </div>
     </div>
   )
