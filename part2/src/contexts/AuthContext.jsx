@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Check if user is logged in on app load
+    // Load user from localStorage on app start
     const token = localStorage.getItem('token')
     const userData = localStorage.getItem('user')
     
@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      // Simulate API call
+      // Fake API call
       const response = await new Promise((resolve) => 
         setTimeout(() => resolve({
           data: {
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (userData) => {
     try {
-      // Simulate API call
+      // Fake API call
       const response = await new Promise((resolve) => 
         setTimeout(() => resolve({
           data: {
