@@ -61,8 +61,11 @@ const UserProfile = () => {
           <i className="fas fa-user text-3xl text-indigo-600"></i>
         </div>
         <div className="ml-6">
-          <h2 className="text-xl font-semibold">{user?.name}</h2>
-          <p className="text-gray-600">{user?.email}</p>
+          <h2 className="text-xl font-semibold">{userProfile?.name || user?.name}</h2>
+          <p className="text-gray-600">{userProfile?.email || user?.email}</p>
+          {userProfile?.company && (
+            <p className="text-sm text-gray-500">{userProfile.company}</p>
+          )}
         </div>
       </div>
 
@@ -82,7 +85,7 @@ const UserProfile = () => {
         </div>
         
         {userProfile?.subscription?.status === 'active' && (
-          <button className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+          <button className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">
             Manage Subscription
           </button>
         )}
@@ -95,16 +98,24 @@ const UserProfile = () => {
           <div className="space-y-2">
             <div>
               <label className="block text-sm font-medium text-gray-700">Name</label>
-              <p className="text-gray-600">{user?.name}</p>
+              <p className="text-gray-600">{userProfile?.name || 'N/A'}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Email</label>
-              <p className="text-gray-600">{user?.email}</p>
+              <p className="text-gray-600">{userProfile?.email || 'N/A'}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Member since</label>
               <p className="text-gray-600">{userProfile?.joinedDate ? formatDate(userProfile.joinedDate) : 'N/A'}</p>
             </div>
+            {userProfile?.website && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Website</label>
+                <a href={userProfile.website} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800">
+                  {userProfile.website}
+                </a>
+              </div>
+            )}
           </div>
         </div>
 
@@ -123,6 +134,14 @@ const UserProfile = () => {
             <div>
               <label className="block text-sm font-medium text-gray-700">Total learning time</label>
               <p className="text-gray-600">{userProfile?.totalLearningTime || '0 hours'}</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Completion rate</label>
+              <p className="text-gray-600">
+                {userProfile?.coursesEnrolled ? 
+                  Math.round((userProfile.coursesCompleted / userProfile.coursesEnrolled) * 100) : 0
+                }%
+              </p>
             </div>
           </div>
         </div>
