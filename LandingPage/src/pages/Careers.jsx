@@ -86,7 +86,7 @@ const Careers = () => {
                       <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">{job.location}</span>
                     </div>
                   </div>
-                  <Button className="mt-4 md:mt-0">Apply Now</Button>
+                  <Button className="mt-4 md:mt-0 p-2.5">Apply Now</Button>
                 </div>
                 <p className="text-gray-600 mt-4">{job.description}</p>
               </div>
