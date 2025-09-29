@@ -195,7 +195,7 @@ const Careers = () => {
             </div>
             
             <div className="mt-6">
-              <Button type="submit">Submit Application</Button>
+              <Button type="submit" className='p-2.5'>Submit Application</Button>
             </div>
           </form>
         </div>
