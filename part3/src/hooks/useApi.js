@@ -1,31 +1,42 @@
 // hooks/useApi.js
-import { useState, useEffect } from 'react'
+import useSWR from 'swr'
 
+// SWR fetcher
+const fetcher = (apiFunction, ...args) => apiFunction(...args)
+
+export const useSwrApi = (key, apiFunction, options = {}) => {
+  const { data, error, isLoading, isValidating, mutate } = useSWR(
+    key,
+    () => fetcher(apiFunction, ...(options.args || [])),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: true,
+      dedupingInterval: 60000, // 1 minute
+      ...options
+    }
+  )
+
+  return {
+    data,
+    loading: isLoading,
+    error,
+    isValidating,
+    mutate
+  }
+}
+
+// Legacy hook for backward compatibility
 const useApi = (apiFunction, immediate = true) => {
-  const [data, setData] = useState(null)
-  const [loading, setLoading] = useState(immediate)
-  const [error, setError] = useState(null)
+  const { data, loading, error, mutate } = useSwrApi(
+    immediate ? [apiFunction.name] : null,
+    apiFunction
+  )
 
   const execute = async (...args) => {
-    try {
-      setLoading(true)
-      setError(null)
-      const result = await apiFunction(...args)
-      setData(result)
-      return result
-    } catch (err) {
-      setError(err.message)
-      throw err
-    } finally {
-      setLoading(false)
-    }
+    return mutate(() => apiFunction(...args), {
+      revalidate: false
+    })
   }
-
-  useEffect(() => {
-    if (immediate) {
-      execute()
-    }
-  }, [])
 
   return { data, loading, error, execute }
 }
